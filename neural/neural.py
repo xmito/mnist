@@ -9,10 +9,6 @@ logger.addHandler(logging.StreamHandler(sys.stdout))
 logger.setLevel(logging.INFO)
 
 
-# TODO early stopping (different strategies)
-# TODO if there is no improvement, lower learning rate by factor 2-to-10 (when validation accuracy drops)
-# TODO dropouts
-
 class Sigmoid:
     def __call__(self, x):
         return 1 / (1 + np.exp(-x))
@@ -119,13 +115,6 @@ class Neural:
         y_pred = self.feed_forward(x)
         cost = self.cost(y_pred, y) + self.regularization(self.weights[-1], x.shape[1])
         return cost
-
-        # Compute output matrix (no softmax yet)
-        matrix = np.max(y_pred, axis=0)
-        y_pred = np.where(matrix == y_pred, 1, 0)
-
-        compare = y == y_pred
-        return np.sum(compare.all(axis=0))
 
     def update_mini_batch(self, mini_batch, eta, n, act=sigmoid):
         """Update the network's weights and biases by applying
